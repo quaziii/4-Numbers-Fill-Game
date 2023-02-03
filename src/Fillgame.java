@@ -93,8 +93,32 @@ public class Fillgame {
             }
         }
 
-        boolean isLegalMove = !violateBlockRule(move, move.value, move.value, visited);
+        return !violateBlockRule(move, move.value, move.value, visited);
+    }
 
-        return isLegalMove;
+    public List<Move> allLegalMoves() {
+        List<Move> allPossibleMoves = new ArrayList<Move>();
+        List<Move> allLegalMoves = new ArrayList<Move>();
+
+        int[] options = {1, 2, 3, 4};
+
+        for (int option : options) {
+            for (int i = 0; i < boardRowSize; i++) {
+                for (int j = 0; j < boardColumnSize; j++) {
+                    if (board[i][j] == 0) {
+                        Move m = new Move(i, j, option);
+                        allPossibleMoves.add(m);
+                    }
+                }
+            }
+        }
+
+        for (Move m : allPossibleMoves) {
+            if (isLegalMove(m)) {
+                allLegalMoves.add(m);
+            }
+        }
+
+        return allLegalMoves;
     }
 }

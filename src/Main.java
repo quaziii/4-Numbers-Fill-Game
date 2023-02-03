@@ -41,6 +41,10 @@ public class Main {
 
         Node root = new Node(null, fillgame);
         List<Node> children = new ArrayList<Node>();
-//        List<Move> allLegalMoves =
+        List<Move> allLegalMoves = root.gameState.allLegalMoves();
+
+        for (Move move : allLegalMoves) {
+            System.out.println(move.row + "," + move.column + "=> " + move.value);
+        }
     }
 }
