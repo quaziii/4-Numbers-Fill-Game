@@ -13,34 +13,6 @@ public class Move {
         this.value = value;
     }
 
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getColumn() {
-        return column;
-    }
-
-    public void setColumn(int column) {
-        this.column = column;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
-    }
-
-    public List<Move> getAdjacentMoves() {
-        return adjacentMoves;
-    }
-
     public void setAdjacentMoves(List<Move> adjacentMoves) {
         this.adjacentMoves = adjacentMoves;
     }
