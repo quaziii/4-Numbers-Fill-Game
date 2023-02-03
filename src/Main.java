@@ -14,6 +14,8 @@ public class Main {
             }
         }
     }
+
+
     public static void main(String[] args) {
         String fillGamePosition = args[0];
         String timeLimit = args[1];
