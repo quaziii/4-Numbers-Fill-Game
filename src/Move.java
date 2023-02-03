@@ -7,11 +7,10 @@ public class Move {
     int value;
     List<Move> adjacentMoves = new ArrayList<Move>();
 
-    public Move(int row, int column, int value, List<Move> adjacentMoves) {
+    public Move(int row, int column, int value) {
         this.row = row;
         this.column = column;
         this.value = value;
-        this.adjacentMoves = adjacentMoves;
     }
 
     public int getRow() {
