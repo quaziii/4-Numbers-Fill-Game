@@ -13,10 +13,22 @@ public class Fillgame {
         this.boardColumnSize = boardColumnSize;
         this.board = new int[boardRowSize][boardColumnSize];
 
+        // toPlay might be needed
+
         for (int i = 0; i < boardRowSize; i++) {
             for (int j = 0; j < boardColumnSize; j++) {
                 board[i][j] = 0;
             }
+        }
+    }
+
+    public Fillgame(Fillgame fillgame) {
+        this.boardRowSize = fillgame.boardRowSize;
+        this.boardColumnSize = fillgame.boardColumnSize;
+        this.board = new int[boardRowSize][boardColumnSize];
+
+        for (int i = 0; i < this.boardRowSize; i++) {
+            System.arraycopy(fillgame.board[i], 0, this.board[i], 0, this.boardColumnSize);
         }
     }
 

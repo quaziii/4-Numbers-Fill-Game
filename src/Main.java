@@ -44,7 +44,16 @@ public class Main {
         List<Move> allLegalMoves = root.gameState.allLegalMoves();
 
         for (Move move : allLegalMoves) {
-            System.out.println(move.row + "," + move.column + "=> " + move.value);
+            fillgame.board[move.row][move.column] = move.value;
+            Node newChild = new Node(root, new Fillgame(fillgame));
+            children.add(newChild);
+            fillgame.board[move.row][move.column] = 0;
+        }
+        root.children = children;
+
+        for (Node child : root.children) {
+            child.gameState.printBoard();
+            System.out.println();
         }
     }
 }
