@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Main {
     public static void initializeBoardFromInput(Fillgame fillgame, String[] position) {
@@ -25,9 +27,20 @@ public class Main {
         int boardRowSize = position.length;
         int boardColumnSize = position[0].length();
 
-        Fillgame fillgame = new Fillgame(boardRowSize, boardColumnSize);    //  create an empty board
+        Fillgame fillgame = new Fillgame(boardRowSize, boardColumnSize);    // create an empty board
         initializeBoardFromInput(fillgame, position);
 
         fillgame.printBoard();
+
+        Move m = new Move(Integer.parseInt(testRowIdx), Integer.parseInt(testColIdx), Integer.parseInt(testMoveVal));
+
+        if (fillgame.isLegalMove(m))     // outputs to test if the above move is legal
+            System.out.println("LEGAL MOVE FOR " + m.value + " AT (" + m.row + "," + m.column + ")");
+        else
+            System.out.println("ILLEGAL MOVE FOR " + m.value + " AT (" + m.row + "," + m.column + ")");
+
+        Node root = new Node(null, fillgame);
+        List<Node> children = new ArrayList<Node>();
+//        List<Move> allLegalMoves =
     }
 }
