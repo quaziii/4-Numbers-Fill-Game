@@ -5,9 +5,10 @@ public class Node {
     Node parent;
     List<Node> children = new ArrayList<>();
     Fillgame gameState;
-    int phi;
-    int delta;
+    int proof;
+    int disproof;
     int toPlay;
+    boolean expanded;
 
     public Node(Node parent, Fillgame gameState) {
         this.parent = parent;
@@ -18,6 +19,7 @@ public class Node {
         } else {
             this.toPlay = GameBasics.BLACK + GameBasics.WHITE - parent.toPlay;
         }
+        this.expanded = false;
     }
 
     public void printBoardStatus() {
