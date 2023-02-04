@@ -6,6 +6,7 @@ public class Move {
     int column;
     int value;
     List<Move> adjacentMoves = new ArrayList<Move>();
+    List<Move> diagonalMoves = new ArrayList<Move>();
 
     public Move(int row, int column, int value) {
         this.row = row;
@@ -15,5 +16,9 @@ public class Move {
 
     public void setAdjacentMoves(List<Move> adjacentMoves) {
         this.adjacentMoves = adjacentMoves;
+    }
+
+    public void setDiagonalMoves(List<Move> diagonalMoves) {
+        this.diagonalMoves = diagonalMoves;
     }
 }

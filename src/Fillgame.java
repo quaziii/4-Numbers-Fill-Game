@@ -8,6 +8,11 @@ public class Fillgame {
     int toPlay;
     List<Move> moves = new ArrayList<Move>();
 
+    public static int[] adjRowDirections = {0, 1, 0, -1};   //directions of row to move left, right, top, bottom
+    public static int[] adjColumnDirections = {-1, 0, 1, 0};   //directions of column to move left, right, top, bottom
+    public  static int[] diagRowDirections = {-1, 1, -1, 1};
+    public static int[] diagColumnDirections = {1, 1, -1, -1};
+
     public Fillgame(int boardRowSize, int boardColumnSize) {
         this.boardRowSize = boardRowSize;
         this.boardColumnSize = boardColumnSize;
@@ -46,14 +51,11 @@ public class Fillgame {
     }
 
     public void pushAdjacentMoves(Move move) {
-        int[] rowDirections = {0, 1, 0, -1};   //directions of row to move left, right, top, bottom
-        int[] columnDirections = {-1, 0, 1, 0};   //directions of column to move left, right, top, bottom
-
         List<Move> adjacentMoves = new ArrayList<Move>();
 
         for (int i = 0; i < 4; i++) {
-            int adj_x = move.row + rowDirections[i];
-            int adj_y = move.column + columnDirections[i];
+            int adj_x = move.row + adjRowDirections[i];
+            int adj_y = move.column + adjColumnDirections[i];
             int adj_cell_value = 0;
 
             if (isValidBoardCell(adj_x, adj_y)) {
@@ -64,6 +66,24 @@ public class Fillgame {
         }
 
         move.setAdjacentMoves(adjacentMoves);
+    }
+
+    public void pushDiagonalMoves(Move move) {
+        List<Move> diagonalMoves = new ArrayList<Move>();
+
+        for (int i = 0; i < 4; i++) {
+            int diag_x = move.row + diagRowDirections[i];
+            int diag_y = move.column + adjColumnDirections[i];
+            int diag_cell_value = 0;
+
+            if (isValidBoardCell(diag_x, diag_y)) {
+                diag_cell_value = board[diag_x][diag_y];
+            }
+
+            diagonalMoves.add(new Move(diag_x, diag_y, diag_cell_value));
+        }
+
+        move.setDiagonalMoves(diagonalMoves);
     }
 
     public boolean violateBlockRule(Move move, int value, int limit, int[][] visited) {
@@ -105,18 +125,24 @@ public class Fillgame {
             }
         }
 
-        return !violateBlockRule(move, move.value, move.value, visited);
+        boolean violateBlockRule = violateBlockRule(move, move.value, move.value, visited);
+
+        return !violateBlockRule;
     }
 
     public List<Move> allLegalMoves() {
         List<Move> allPossibleMoves = new ArrayList<Move>();
         List<Move> allLegalMoves = new ArrayList<Move>();
 
-        int[] options = {1, 2, 3, 4};
+        List<Integer> options = new ArrayList<Integer>();
+        options.add(1);
+        options.add(2);
+        options.add(3);
+        options.add(4);
 
-        for (int option : options) {
-            for (int i = 0; i < boardRowSize; i++) {
-                for (int j = 0; j < boardColumnSize; j++) {
+        for (int i = 0; i < boardRowSize; i++) {
+            for (int j = 0; j < boardColumnSize; j++) {
+                for (int option : options) {
                     if (board[i][j] == 0) {
                         Move m = new Move(i, j, option);
                         allPossibleMoves.add(m);
