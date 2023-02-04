@@ -51,7 +51,29 @@ public class PNS {
     }
 
     public Node selectMostProvingNode(Node node) {
+        Node best = null;
 
+        while (node.expanded && !node.gameState.allLegalMoves().isEmpty()) {    // expanded node and not the end of the game
+            int value = GameBasics.INFINITY;
+
+            if (node.toPlay == GameBasics.BLACK) {      // OR node
+                for (Node child : node.children) {
+                    if (value > child.proof) {
+                        best = child;
+                        value = child.proof;
+                    }
+                }
+            } else {    // AND node
+                for (Node child : node.children) {
+                    if (value > child.disproof) {
+                        best = child;
+                        value = child.disproof;
+                    }
+                }
+            }
+
+            node = best;    //need to be checked later
+        }
 
         return node;
     }
