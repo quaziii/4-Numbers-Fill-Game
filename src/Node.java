@@ -7,10 +7,17 @@ public class Node {
     Fillgame gameState;
     int phi;
     int delta;
+    int toPlay;
 
     public Node(Node parent, Fillgame gameState) {
         this.parent = parent;
         this.gameState = gameState;
+
+        if (parent == null) {
+            this.toPlay = GameBasics.BLACK;
+        } else {
+            this.toPlay = GameBasics.BLACK + GameBasics.WHITE - parent.toPlay;
+        }
     }
 
     public void printBoardStatus() {
