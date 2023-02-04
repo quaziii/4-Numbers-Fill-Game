@@ -7,6 +7,7 @@ public class Node {
     Fillgame gameState;
     int proof;
     int disproof;
+    int value;
     int toPlay;
     boolean expanded;
 

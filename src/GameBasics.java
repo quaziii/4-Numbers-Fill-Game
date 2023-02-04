@@ -4,4 +4,5 @@ public class GameBasics {
     public static int WHITE = 2;
     public static int PROVEN = 100;
     public static int DISPROVEN = 200;
+    public static int UNKNOWN = -1000;
 }
