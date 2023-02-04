@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Fillgame {
@@ -44,6 +45,18 @@ public class Fillgame {
             }
             System.out.println();
         }
+    }
+
+    public int[][] createEmptyBoard() {
+        int[][] emptyBoard = new int[boardRowSize][boardColumnSize];
+
+        for (int i = 0; i < boardRowSize; i++) {
+            for (int j = 0; j < boardColumnSize; j++) {
+                emptyBoard[i][j] = 0;
+            }
+        }
+
+        return emptyBoard;
     }
 
     public boolean isValidBoardCell(int rowIdx, int colIdx) {
@@ -116,18 +129,66 @@ public class Fillgame {
         return false;
     }
 
-    public boolean isLegalMove(Move move) {
-        int[][] visited = new int[boardRowSize][boardColumnSize];     // keeps track of the visited cells
+    public boolean preserveRegionRule(Move move, int value, int limit, int[][] visited) {   // checks if the move kills other moves opportunity
+        visited[move.row][move.column] = 1;
 
-        for (int i = 0; i < boardRowSize; i++) {
-            for (int j = 0; j < boardColumnSize; j++) {
-                visited[i][j] = 0;
+        if (move.value == 0) {
+            return true;
+        }
+        
+        if (limit < 0) {
+            return false;
+        }
+        
+        pushAdjacentMoves(move);
+
+        for (Move m : move.adjacentMoves) {
+            if (isValidBoardCell(m.row, m.column) && (m.value == value || m.value == 0) && visited[m.row][m.column] == 0) {
+                if (preserveRegionRule(m, value, limit - 1, visited)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    public boolean isLegalMove(Move move) {
+        int[][] visitedForBlockRule = createEmptyBoard();
+
+        boolean violateBlockRule = violateBlockRule(move, move.value, move.value, visitedForBlockRule);
+        boolean areNeighboursCompletedBlock = false;
+        boolean preserveRegionRule = true;  // looks for empty cell in neighbours block
+
+        for (Move neighbour : move.adjacentMoves) {
+            if (neighbour.value == 1) {
+                areNeighboursCompletedBlock = false;
+                break;
+            } else if (neighbour.value != 0 && neighbour.value != move.value) {
+                int[][] visited = createEmptyBoard();
+                visited [move.row][move.column] = 1;
+
+                areNeighboursCompletedBlock = violateBlockRule(neighbour, neighbour.value, neighbour.value, visited);    // check if neighbour's block is completed
+
+                if (!areNeighboursCompletedBlock) {  // if any one of them is false
+                    break;
+                }
+            }
+        }
+        
+        for (Move neighbour : move.adjacentMoves) {
+            if (neighbour.value != 0 && neighbour.value != move.value) {
+                int[][] visitedForRegionRule = createEmptyBoard();
+                visitedForRegionRule[move.row][move.column] = 1;
+                preserveRegionRule = preserveRegionRule(neighbour, neighbour.value, neighbour.value - 1, visitedForRegionRule);
+
+                if (!preserveRegionRule) {  // if any one of them is false
+                    break;
+                }
             }
         }
 
-        boolean violateBlockRule = violateBlockRule(move, move.value, move.value, visited);
-
-        return !violateBlockRule;
+        return !violateBlockRule && (areNeighboursCompletedBlock || preserveRegionRule);
     }
 
     public List<Move> allLegalMoves() {

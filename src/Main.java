@@ -20,11 +20,6 @@ public class Main {
         String fillGamePosition = args[0];
         String timeLimit = args[1];
 
-        // Remove this block later
-        String testRowIdx = args[2];
-        String testColIdx = args[3];
-        String testMoveVal = args[4];
-
         String[] position = fillGamePosition.split("\\*");
         int boardRowSize = position.length;
         int boardColumnSize = position[0].length();
@@ -32,14 +27,10 @@ public class Main {
         Fillgame fillgame = new Fillgame(boardRowSize, boardColumnSize);    // create an empty board
         initializeBoardFromInput(fillgame, position);
 
+        System.out.println("Board: ");
+        System.out.println("-------");
         fillgame.printBoard();
-
-        Move m = new Move(Integer.parseInt(testRowIdx), Integer.parseInt(testColIdx), Integer.parseInt(testMoveVal));
-
-        if (fillgame.isLegalMove(m))     // outputs to test if the above move is legal
-            System.out.println("LEGAL MOVE FOR " + m.value + " AT (" + m.row + "," + m.column + ")");
-        else
-            System.out.println("ILLEGAL MOVE FOR " + m.value + " AT (" + m.row + "," + m.column + ")");
+        System.out.println();
 
         Node root = new Node(null, fillgame);
         List<Node> children = new ArrayList<Node>();
@@ -53,6 +44,8 @@ public class Main {
         }
         root.children = children;
 
+        System.out.println("Legal Moves: ");
+        System.out.println("-------------");
         for (Node child : root.children) {
             child.gameState.printBoard();
             System.out.println();
