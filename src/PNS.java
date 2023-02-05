@@ -1,6 +1,9 @@
 import java.util.List;
+import java.util.ArrayList;
 
 public class PNS {
+    public static Move nextMove = null;
+    public static int nodesExpanded = 0;
     public static void evaluate(Node node) {
         if (node.gameState.allLegalMoves().isEmpty()) {
             if (node.toPlay == GameBasics.WHITE) {
@@ -102,6 +105,7 @@ public class PNS {
         }
 
         node.expanded = true;
+        nodesExpanded++;
     }
 
     public static Node updateAncestors(Node node, Node root) {
@@ -130,9 +134,32 @@ public class PNS {
         Node mostProving;
 
         while (root.proof != 0 && root.disproof != 0) {
+            if ((System.currentTimeMillis() - Main.startTime) > Main.timeLimit)
+                return;
+
             mostProving = selectMostProvingNode(current);
             expandNode(mostProving);
             current = updateAncestors(mostProving, root);
+        }
+    }
+
+    public static void setNextMove(Node root) {
+        List<Move> allLegalMoves = root.gameState.allLegalMoves();
+        int minProof = GameBasics.INFINITY;
+
+        for (Node child : root.children) {
+            if (child.proof < minProof) {
+                minProof = child.proof;
+                int[][] board = child.gameState.board;
+
+                for (int i = 0; i < child.gameState.boardRowSize; i++) {
+                    for (int j = 0; j < child.gameState.boardColumnSize; j++) {
+                        if (child.gameState.board[i][j] != root.gameState.board[i][j]) {
+                            nextMove = new Move(i, j, child.gameState.board[i][j]);
+                        }
+                    }
+                }
+            }
         }
     }
 }

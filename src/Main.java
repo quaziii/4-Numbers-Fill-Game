@@ -3,6 +3,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Main {
+    public static long startTime;
+    public static long stopTime;
+    public static long timeLimit;
     public static void initializeBoardFromInput(Fillgame fillgame, String[] position) {
         for (int i = 0; i < fillgame.boardRowSize; i++) {
             for (int j = 0; j < fillgame.boardColumnSize; j++) {
@@ -18,7 +21,9 @@ public class Main {
 
     public static void main(String[] args) {
         String fillGamePosition = args[0];
-        String timeLimit = args[1];
+        String limit = args[1];
+        timeLimit = Integer.valueOf(limit);
+        timeLimit *= 1000F;
 
         String[] position = fillGamePosition.split("\\*");
         int boardRowSize = position.length;
@@ -27,18 +32,19 @@ public class Main {
         Fillgame fillgame = new Fillgame(boardRowSize, boardColumnSize);    // create an empty board
         initializeBoardFromInput(fillgame, position);
 
-        System.out.println("Board: ");
-        System.out.println("-------");
-        fillgame.printBoard();
-        System.out.println();
-
         Node root = new Node(null, fillgame);
 
-        long startTime = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
         PNS.runPNS(root);
-        System.out.println("PN = " + root.proof);
-        System.out.println("DN = " + root.disproof);
-        long stopTime = System.currentTimeMillis();
-        System.out.println((stopTime - startTime) / 1000F);
+        PNS.setNextMove(root);
+        stopTime = System.currentTimeMillis();
+
+        if (root.proof == 0) {
+            System.out.println("W " + PNS.nextMove.row + " " + PNS.nextMove.column + " " + PNS.nextMove.value + " " + ((stopTime - startTime) / 1000F) + " " + PNS.nodesExpanded);
+        }  else if (root.disproof == 0) {
+            System.out.println("L None" + ((stopTime - startTime) / 1000F) + " " + PNS.nodesExpanded);
+        } else {
+            System.out.println("? None " + ((stopTime - startTime) / 1000F) + " " + PNS.nodesExpanded);
+        }
     }
 }
