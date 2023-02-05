@@ -73,9 +73,8 @@ public class Fillgame {
 
             if (isValidBoardCell(adj_x, adj_y)) {
                 adj_cell_value = board[adj_x][adj_y];
+                adjacentMoves.add(new Move(adj_x, adj_y, adj_cell_value));
             }
-
-            adjacentMoves.add(new Move(adj_x, adj_y, adj_cell_value));
         }
 
         move.setAdjacentMoves(adjacentMoves);
@@ -86,14 +85,13 @@ public class Fillgame {
 
         for (int i = 0; i < 4; i++) {
             int diag_x = move.row + diagRowDirections[i];
-            int diag_y = move.column + adjColumnDirections[i];
+            int diag_y = move.column + diagColumnDirections[i];
             int diag_cell_value = 0;
 
             if (isValidBoardCell(diag_x, diag_y)) {
                 diag_cell_value = board[diag_x][diag_y];
+                diagonalMoves.add(new Move(diag_x, diag_y, diag_cell_value));
             }
-
-            diagonalMoves.add(new Move(diag_x, diag_y, diag_cell_value));
         }
 
         move.setDiagonalMoves(diagonalMoves);
@@ -116,7 +114,8 @@ public class Fillgame {
         if (limit <= 0)
             return false;
 
-        pushAdjacentMoves(move);
+        if (move.adjacentMoves.isEmpty())
+            pushAdjacentMoves(move);
 
         for (Move m : move.adjacentMoves) {
             if (isValidBoardCell(m.row, m.column) && m.value == value && visited[m.row][m.column] == 0) {
@@ -139,8 +138,9 @@ public class Fillgame {
         if (limit < 0) {
             return false;
         }
-        
-        pushAdjacentMoves(move);
+
+        if (move.adjacentMoves.isEmpty())
+            pushAdjacentMoves(move);
 
         for (Move m : move.adjacentMoves) {
             if (isValidBoardCell(m.row, m.column) && (m.value == value || m.value == 0) && visited[m.row][m.column] == 0) {
@@ -157,14 +157,26 @@ public class Fillgame {
         int[][] visitedForBlockRule = createEmptyBoard();
 
         boolean violateBlockRule = violateBlockRule(move, move.value, move.value, visitedForBlockRule);
+
+        if (violateBlockRule)
+            return false;
+
         boolean areNeighboursCompletedBlock = false;
         boolean preserveRegionRule = true;  // looks for empty cell in neighbours block
+        boolean surroundedByOthers = true;
 
         for (Move neighbour : move.adjacentMoves) {
-            if (neighbour.value == 1) {
-                areNeighboursCompletedBlock = false;
+            if (neighbour.value == 0 || neighbour.value == move.value || move.value == 1) {
+                surroundedByOthers = false;
                 break;
-            } else if (neighbour.value != 0 && neighbour.value != move.value) {
+            }
+        }
+
+        if (surroundedByOthers)
+            return false;
+
+        for (Move neighbour : move.adjacentMoves) {
+            if (neighbour.value != 0 && neighbour.value != move.value) {
                 int[][] visited = createEmptyBoard();
                 visited [move.row][move.column] = 1;
 
@@ -175,7 +187,9 @@ public class Fillgame {
                 }
             }
         }
-        
+
+//        System.out.println(areNeighboursCompletedBlock + " for " + move.value);
+
         for (Move neighbour : move.adjacentMoves) {
             if (neighbour.value != 0 && neighbour.value != move.value) {
                 int[][] visitedForRegionRule = createEmptyBoard();
@@ -188,7 +202,7 @@ public class Fillgame {
             }
         }
 
-        return !violateBlockRule && (areNeighboursCompletedBlock || preserveRegionRule);
+        return areNeighboursCompletedBlock || preserveRegionRule;
     }
 
     public List<Move> allLegalMoves() {
