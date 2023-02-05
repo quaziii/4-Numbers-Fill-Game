@@ -42,9 +42,10 @@ public class Main {
         if (root.proof == 0) {
             System.out.println("W " + PNS.nextMove.row + " " + PNS.nextMove.column + " " + PNS.nextMove.value + " " + ((stopTime - startTime) / 1000F) + " " + PNS.nodesExpanded);
         }  else if (root.disproof == 0) {
-            System.out.println("L None" + ((stopTime - startTime) / 1000F) + " " + PNS.nodesExpanded);
+            System.out.println("L None " + ((stopTime - startTime) / 1000F) + " " + PNS.nodesExpanded);
         } else {
             System.out.println("? None " + ((stopTime - startTime) / 1000F) + " " + PNS.nodesExpanded);
         }
+        System.out.println((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/(1024.0 * 1024.0));
     }
 }
