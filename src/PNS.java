@@ -1,9 +1,17 @@
-public class PNS {
-    public void evaluate(Node node) {
+import java.util.List;
 
+public class PNS {
+    public static void evaluate(Node node) {
+        if (node.gameState.allLegalMoves().isEmpty()) {
+            if (node.toPlay == GameBasics.WHITE) {
+                node.value = GameBasics.PROVEN;
+            } else if (node.toPlay == GameBasics.BLACK) {
+                node.value = GameBasics.DISPROVEN;
+            }
+        }
     }
 
-    public void setProofAndDisproofNumbers(Node node) {
+    public static void setProofAndDisproofNumbers(Node node) {
         if (!node.children.isEmpty()) {     // internal node. has child(ren)
             if (node.toPlay == GameBasics.WHITE) {      // AND node
                 node.proof = 0;
@@ -50,7 +58,7 @@ public class PNS {
         }
     }
 
-    public Node selectMostProvingNode(Node node) {
+    public static Node selectMostProvingNode(Node node) {
         Node best = null;
 
         while (node.expanded && !node.gameState.allLegalMoves().isEmpty()) {    // expanded node and not the end of the game
@@ -78,21 +86,48 @@ public class PNS {
         return node;
     }
 
-    public void expandNode(Node node) {
-
+    public static void generateChildren(Node node) {
+        node.generateChildren();
     }
 
-    public Node updateAncestors(Node node, Node root) {
+    public static void expandNode(Node node) {
+        generateChildren(node);
 
+        for (Node child : node.children) {
+            evaluate(child);
+            setProofAndDisproofNumbers(child);
 
-        return node;
+            if ((node.toPlay == GameBasics.BLACK && child.proof == 0) || (node.toPlay == GameBasics.WHITE && child.disproof == 0))
+                break;
+        }
+
+        node.expanded = true;
     }
 
-    public void runPNS(Node root) {
+    public static Node updateAncestors(Node node, Node root) {
+        while (true) {
+            int oldProof = node.proof;
+            int oldDisproof = node.disproof;
+
+            setProofAndDisproofNumbers(node);
+
+            if (node.proof == oldProof && node.disproof == oldDisproof) {
+                return node;
+            }
+
+            if (node == root) {  // recheck this
+                return node;
+            }
+
+            node = node.parent;
+        }
+    }
+
+    public static void runPNS(Node root) {
         evaluate(root);
         setProofAndDisproofNumbers(root);
         Node current = root;
-        Node mostProving = null;
+        Node mostProving;
 
         while (root.proof != 0 && root.disproof != 0) {
             mostProving = selectMostProvingNode(current);

@@ -33,22 +33,12 @@ public class Main {
         System.out.println();
 
         Node root = new Node(null, fillgame);
-        List<Node> children = new ArrayList<Node>();
-        List<Move> allLegalMoves = root.gameState.allLegalMoves();
 
-        for (Move move : allLegalMoves) {
-            fillgame.board[move.row][move.column] = move.value;
-            Node newChild = new Node(root, new Fillgame(fillgame));
-            children.add(newChild);
-            fillgame.board[move.row][move.column] = 0;
-        }
-        root.children = children;
-
-        System.out.println("Legal Moves: ");
-        System.out.println("-------------");
-        for (Node child : root.children) {
-            child.gameState.printBoard();
-            System.out.println();
-        }
+        long startTime = System.currentTimeMillis();
+        PNS.runPNS(root);
+        System.out.println("PN = " + root.proof);
+        System.out.println("DN = " + root.disproof);
+        long stopTime = System.currentTimeMillis();
+        System.out.println((stopTime - startTime) / 1000F);
     }
 }

@@ -21,6 +21,7 @@ public class Node {
             this.toPlay = GameBasics.BLACK + GameBasics.WHITE - parent.toPlay;
         }
         this.expanded = false;
+        this.value = GameBasics.UNKNOWN;
     }
 
     public void printBoardStatus() {
@@ -30,5 +31,18 @@ public class Node {
             }
             System.out.println();
         }
+    }
+
+    public void generateChildren() {
+        List<Node> children = new ArrayList<Node>();
+        List<Move> allLegalMoves = this.gameState.allLegalMoves();
+
+        for (Move move : allLegalMoves) {
+            this.gameState.board[move.row][move.column] = move.value;
+            Node newChild = new Node(this, new Fillgame(this.gameState));
+            children.add(newChild);
+            this.gameState.board[move.row][move.column] = 0;
+        }
+        this.children = children;
     }
 }
