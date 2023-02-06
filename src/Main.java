@@ -8,6 +8,8 @@ public class Main {
     public static long stopTime;
     public static long timeLimit;
 
+    public static boolean timeExceeded = false;
+
     public static Move nextMove = null;
     public static int nodeCount = 0;
     public static void initializeBoardFromInput(Fillgame fillgame, String[] position) {
@@ -23,12 +25,16 @@ public class Main {
     }
 
     public static boolean storeInTT(HashMap<Fillgame, Boolean> tt, Fillgame fillgame, boolean result) {
-        tt.put(fillgame, result);
+        tt.put(new Fillgame(fillgame), result);
         return result;
     }
 
     public static boolean negamaxTT (Fillgame fillgame, HashMap<Fillgame, Boolean> tt) {
         boolean result = tt.containsKey(fillgame);
+        if ((System.currentTimeMillis() - startTime) > timeLimit) {
+            timeExceeded = true;
+            return false;
+        }
 
         if (result) {
             return tt.get(fillgame);
@@ -97,8 +103,10 @@ public class Main {
 
 //            System.out.println("Negamax with TT");
 //            System.out.println("-----------------------");
-            System.out.println();
-            if (negamaxResult) {
+//            System.out.println();
+            if (timeExceeded) {
+                System.out.println("? None " + ((stopTime - startTime) / 1000F) + " " + nodeCount);
+            } else if (negamaxResult) {
                 System.out.println("W " + nextMove.column + " " + nextMove.row + " " + nextMove.value + " " + ((stopTime-startTime) / 1000F) + " " + nodeCount);
             } else {
                 System.out.println("L None " + ((stopTime-startTime) / 1000F) + " " + nodeCount);
