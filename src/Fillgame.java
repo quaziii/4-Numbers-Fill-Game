@@ -36,6 +36,12 @@ public class Fillgame {
         for (int i = 0; i < this.boardRowSize; i++) {
             System.arraycopy(fillgame.board[i], 0, this.board[i], 0, this.boardColumnSize);
         }
+
+        if (fillgame.toPlay == GameBasics.WHITE) {
+            this.toPlay = GameBasics.BLACK;
+        } else {
+            this.toPlay = GameBasics.WHITE;
+        }
     }
 
     public void printBoard() {
