@@ -95,8 +95,8 @@ public class Main {
             negamaxResult = negamaxTT(fillgame, tt);
             stopTime = System.currentTimeMillis();
 
-            System.out.println("Negamax with TT");
-            System.out.println("-----------------------");
+//            System.out.println("Negamax with TT");
+//            System.out.println("-----------------------");
             System.out.println();
             if (negamaxResult) {
                 System.out.println("W " + nextMove.column + " " + nextMove.row + " " + nextMove.value + " " + ((stopTime-startTime) / 1000F) + " " + nodeCount);
@@ -107,24 +107,24 @@ public class Main {
         System.out.println();
 
         // PNS
-        Node root = new Node(null, fillgame);
-
-        startTime = System.currentTimeMillis();
-        PNS.nodeCount++;
-        PNS.runPNS(root);
-        PNS.setNextMove(root);
-        stopTime = System.currentTimeMillis();
-
-        System.out.println("PNS");
-        System.out.println("-----------------------");
-        System.out.println();
-        if (root.proof == 0) {
-            System.out.println("W " + PNS.nextMove.column + " " + PNS.nextMove.row + " " + PNS.nextMove.value + " " + ((stopTime - startTime) / 1000F) + " " + PNS.nodeCount);
-        }  else if (root.disproof == 0) {
-            System.out.println("L None " + ((stopTime - startTime) / 1000F) + " " + PNS.nodeCount);
-        } else {
-            System.out.println("? None " + ((stopTime - startTime) / 1000F) + " " + PNS.nodeCount);
-        }
+//        Node root = new Node(null, fillgame);
+//
+//        startTime = System.currentTimeMillis();
+//        PNS.nodeCount++;
+//        PNS.runPNS(root);
+//        PNS.setNextMove(root);
+//        stopTime = System.currentTimeMillis();
+//
+//        System.out.println("PNS");
+//        System.out.println("-----------------------");
+//        System.out.println();
+//        if (root.proof == 0) {
+//            System.out.println("W " + PNS.nextMove.column + " " + PNS.nextMove.row + " " + PNS.nextMove.value + " " + ((stopTime - startTime) / 1000F) + " " + PNS.nodeCount);
+//        }  else if (root.disproof == 0) {
+//            System.out.println("L None " + ((stopTime - startTime) / 1000F) + " " + PNS.nodeCount);
+//        } else {
+//            System.out.println("? None " + ((stopTime - startTime) / 1000F) + " " + PNS.nodeCount);
+//        }
 //        System.out.println((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/(10241024.0));
     }
 }
