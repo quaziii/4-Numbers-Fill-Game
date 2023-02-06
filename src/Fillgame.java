@@ -209,6 +209,11 @@ public class Fillgame {
         List<Move> allPossibleMoves = new ArrayList<Move>();
         List<Move> allLegalMoves = new ArrayList<Move>();
 
+        if (boardRowSize == 1 && boardColumnSize == 1 && board[0][0] == 0) {
+            allLegalMoves.add(new Move(0, 0, 1));
+            return allLegalMoves;
+        }
+
         List<Integer> options = new ArrayList<Integer>();
         options.add(1);
         options.add(2);
