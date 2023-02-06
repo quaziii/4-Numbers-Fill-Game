@@ -9,6 +9,7 @@ public class Main {
     public static long timeLimit;
 
     public static Move nextMove = null;
+    public static int nodeCount = 0;
     public static void initializeBoardFromInput(Fillgame fillgame, String[] position) {
         for (int i = 0; i < fillgame.boardRowSize; i++) {
             for (int j = 0; j < fillgame.boardColumnSize; j++) {
@@ -37,10 +38,11 @@ public class Main {
 
         if (allLegalMoves.isEmpty()) {
             result = fillgame.toPlay == GameBasics.BLACK;
-            return storeInTT(tt, fillgame, !result);
+            return storeInTT(tt, fillgame, result);
         }
 
         for (Move m : allLegalMoves) {
+            nodeCount++;
             fillgame.board[m.row][m.column] = m.value;
 
             if (fillgame.toPlay == GameBasics.WHITE) {
@@ -49,7 +51,7 @@ public class Main {
                 fillgame.toPlay = GameBasics.WHITE;
             }
 
-            boolean success = negamaxTT(fillgame, tt);
+            boolean success = !negamaxTT(fillgame, tt);
 
             fillgame.board[m.row][m.column] = 0;
             if (fillgame.toPlay == GameBasics.WHITE) {
@@ -83,19 +85,24 @@ public class Main {
         fillgame.toPlay = GameBasics.BLACK;
 
         // negaMAX
-        HashMap<Fillgame, Boolean> tt = new HashMap<>();
-        boolean negamaxResult;
-        startTime = System.currentTimeMillis();
-        negamaxResult = negamaxTT(fillgame, tt);
-        stopTime = System.currentTimeMillis();
-
-        System.out.println("Negamax with TT");
-        System.out.println("-----------------------");
-        System.out.println();
-        if (negamaxResult) {
-            System.out.println("W " + nextMove.column + " " + nextMove.row + " " + nextMove.value + " " + ((stopTime-startTime) / 1000F));
+        if (fillgame.allLegalMoves().isEmpty()) {
+            System.out.println("L None " + ((stopTime-startTime) / 1000F) + " " + nodeCount);
         } else {
-            System.out.println("L None " + ((stopTime-startTime) / 1000F));
+            HashMap<Fillgame, Boolean> tt = new HashMap<>();
+            boolean negamaxResult;
+            startTime = System.currentTimeMillis();
+            nodeCount++;
+            negamaxResult = negamaxTT(fillgame, tt);
+            stopTime = System.currentTimeMillis();
+
+            System.out.println("Negamax with TT");
+            System.out.println("-----------------------");
+            System.out.println();
+            if (negamaxResult) {
+                System.out.println("W " + nextMove.column + " " + nextMove.row + " " + nextMove.value + " " + ((stopTime-startTime) / 1000F) + " " + nodeCount);
+            } else {
+                System.out.println("L None " + ((stopTime-startTime) / 1000F) + " " + nodeCount);
+            }
         }
         System.out.println();
 
@@ -103,6 +110,7 @@ public class Main {
         Node root = new Node(null, fillgame);
 
         startTime = System.currentTimeMillis();
+        PNS.nodeCount++;
         PNS.runPNS(root);
         PNS.setNextMove(root);
         stopTime = System.currentTimeMillis();
@@ -111,11 +119,11 @@ public class Main {
         System.out.println("-----------------------");
         System.out.println();
         if (root.proof == 0) {
-            System.out.println("W " + PNS.nextMove.column + " " + PNS.nextMove.row + " " + PNS.nextMove.value + " " + ((stopTime - startTime) / 1000F) + " " + PNS.nodesExpanded);
+            System.out.println("W " + PNS.nextMove.column + " " + PNS.nextMove.row + " " + PNS.nextMove.value + " " + ((stopTime - startTime) / 1000F) + " " + PNS.nodeCount);
         }  else if (root.disproof == 0) {
-            System.out.println("L None " + ((stopTime - startTime) / 1000F) + " " + PNS.nodesExpanded);
+            System.out.println("L None " + ((stopTime - startTime) / 1000F) + " " + PNS.nodeCount);
         } else {
-            System.out.println("? None " + ((stopTime - startTime) / 1000F) + " " + PNS.nodesExpanded);
+            System.out.println("? None " + ((stopTime - startTime) / 1000F) + " " + PNS.nodeCount);
         }
 //        System.out.println((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/(10241024.0));
     }

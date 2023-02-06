@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class PNS {
     public static Move nextMove = null;
-    public static int nodesExpanded = 0;
+    public static int nodeCount = 0;
     public static void evaluate(Node node) {
         if (node.gameState.allLegalMoves().isEmpty()) {
             if (node.toPlay == GameBasics.WHITE) {
@@ -97,6 +97,7 @@ public class PNS {
         generateChildren(node);
 
         for (Node child : node.children) {
+            nodeCount++;
             evaluate(child);
             setProofAndDisproofNumbers(child);
 
@@ -105,7 +106,6 @@ public class PNS {
         }
 
         node.expanded = true;
-        nodesExpanded++;
     }
 
     public static Node updateAncestors(Node node, Node root) {
